@@ -1,8 +1,9 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
-import {TOKEN_KEY, API_BASE_URl} from "@env";
 import {useRouter} from "expo-router";
+
+import {API_BASE_URL} from "../../src/constants";
 
 interface AuthProps {
   authState?: {token: string | null; authenticated: boolean | null};
@@ -36,23 +37,23 @@ export const AuthProvider = ({children}: any) => {
 
   const router = useRouter();
   useEffect(() => {
-    const loadToken = async () => {
-      const token = await SecureStore.getItemAsync(TOKEN_KEY);
-      console.log("stored:", token);
-      if (token) {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        setAuthState({
-          token: token,
-          authenticated: true,
-        });
-      }
-      loadToken();
-    };
+    // const loadToken = async () => {
+    //   const token = await SecureStore.getItemAsync(TOKEN_KEY);
+    //   console.log("stored:", token);
+    //   if (token) {
+    //     axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    //     setAuthState({
+    //       token: token,
+    //       authenticated: true,
+    //     });
+    //   }
+    //   loadToken();
+    // };
   }, []);
 
   const register = async (username: string, password: string) => {
     try {
-      const result = await axios.post(`${API_BASE_URl}/auth/register`, {
+      const result = await axios.post(`${API_BASE_URL}/auth/register`, {
         username,
         password,
       });
@@ -79,7 +80,7 @@ export const AuthProvider = ({children}: any) => {
 
   const login = async (username: string, password: string) => {
     try {
-      const result = await axios.post(`${API_BASE_URl}/auth/login`, {
+      const result = await axios.post(`${API_BASE_URL}/auth/login`, {
         username,
         password,
       });
@@ -107,7 +108,7 @@ export const AuthProvider = ({children}: any) => {
   const logout = async () => {
     console.log("shesh");
 
-    await SecureStore.deleteItemAsync(TOKEN_KEY);
+    // await SecureStore.deleteItemAsync(TOKEN_KEY);
 
     axios.defaults.headers.common["Authorization"] = "";
     setAuthState({
